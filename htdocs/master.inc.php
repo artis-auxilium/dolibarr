@@ -178,7 +178,7 @@ if (!defined('NOREQUIREUSER')) {
 /*
  * Create the global $hookmanager object
  */
-$hookmanager = new HookManager($db);
+$hookmanager = HookManager::initialise($db);
 
 
 /*

@@ -32,7 +32,7 @@ class HookManager
 	/**
 	 * @var DoliDB Database handler.
 	 */
-	public $db;
+	public static $db;
 
 	/**
 	 * @var string Error code (or message)
@@ -47,6 +47,8 @@ class HookManager
 	// Context hookmanager was created for ('thirdpartycard', 'thirdpartydao', ...)
 	public $contextarray = array();
 
+	private static $globalContextArray = [];
+
 	// Array with instantiated classes
 	public $hooks = array();
 
@@ -58,13 +60,28 @@ class HookManager
 	public $resNbOfHooks = 0;
 
 	/**
-	 * Constructor
-	 *
-	 * @param	DoliDB		$db		Database handler
+	 * @param DoliDB $db
 	 */
-	public function __construct($db)
+	public static function initialise($db)
 	{
-		$this->db = $db;
+		self::$db = $db;
+		return new self();
+	}
+
+	public static function getInstance($arraycontext)
+	{
+		$hookmanager = new self();
+		$hookmanager->contextarray = self::$globalContextArray;
+		$hookmanager->init($arraycontext);
+		HookManager::$globalContextArray = array_unique(array_merge($arraycontext, self::$globalContextArray));
+		return $hookmanager;
+
+	}
+
+	public function initHooks($arraycontext)
+	{
+		dolDeprecated("Use of initHooks is deprecated,  use Hookmanager::getInstance(\$arraycontext)", "V20");
+		$this->init($arraycontext);
 	}
 
 
@@ -79,7 +96,7 @@ class HookManager
 	 *	@param	string[]	$arraycontext	    Array list of searched hooks tab/features. For example: 'thirdpartycard' (for hook methods into page card thirdparty), 'thirdpartydao' (for hook methods into Societe), ...
 	 *	@return	int								0 or 1
 	 */
-	public function initHooks($arraycontext)
+	public function init($arraycontext)
 	{
 		global $conf;
 
@@ -119,7 +136,7 @@ class HookManager
 						$resaction = dol_include_once($path.$actionfile);
 						if ($resaction) {
 							$controlclassname = 'Actions'.ucfirst($module);
-							$actionInstance = new $controlclassname($this->db);
+							$actionInstance = new $controlclassname(self::$db);
 							$priority = empty($actionInstance->priority) ? 50 : $actionInstance->priority;
 							$this->hooks[$context][$priority.':'.$module] = $actionInstance;
 						}
