@@ -36,32 +36,14 @@ return static function (RectorConfig $rectorConfig): void {
 
 
 	// Register rules
-
-	//$rectorConfig->rule(Rector\Php71\Rector\List_\ListToArrayDestructRector::class);
-	//$rectorConfig->rule(Rector\Php72\Rector\FuncCall\CreateFunctionToAnonymousFunctionRector::class);
-	//$rectorConfig->rule(Rector\Php72\Rector\FuncCall\GetClassOnNullRector::class);
-	//$rectorConfig->rule(Rector\Php72\Rector\Assign\ListEachRector::class);
-	//$rectorConfig->rule(Rector\Php72\Rector\FuncCall\ParseStrWithResultArgumentRector::class);
-	//$rectorConfig->rule(Rector\Php72\Rector\FuncCall\StringifyDefineRector::class);
-
-	//$rectorConfig->rule(ReplaceEachAssignmentWithKeyCurrentRector::class);
-
-	$rectorConfig->rule(Rector\CodeQuality\Rector\FuncCall\FloatvalToTypeCastRector::class);
-	$rectorConfig->rule(Rector\CodeQuality\Rector\FuncCall\BoolvalToTypeCastRector::class);
-	$rectorConfig->rule(Rector\CodeQuality\Rector\NotEqual\CommonNotEqualRector::class);
-	//Not yet ready: $rectorconfig->rule(Rector\CodeQuality\Rector\If_\CompleteMissingIfElseBracketRector::class);
-	$rectorConfig->rule(Rector\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector::class);
-
-	$rectorConfig->rule(Dolibarr\Rector\Renaming\EmptyGlobalToFunction::class);
-	$rectorConfig->rule(Dolibarr\Rector\Renaming\EmptyUserRightsToFunction::class);
-	$rectorConfig->rule(Dolibarr\Rector\Renaming\GlobalToFunction::class);
-	$rectorConfig->rule(Dolibarr\Rector\Renaming\UserRightsToFunction::class);
-
-	// Add all predefined rules to migrate to up to php 71.
-	// Warning this break tab spacing of arrays on several lines
-	/*$rectorConfig->sets([
-		LevelSetList::UP_TO_PHP_70
-	]);*/
+	$rectorConfig->sets([
+		Dolibarr\Rector\Set\SetList::CODE_QUALITY,
+		Dolibarr\Rector\Set\SetLevelList::UP_TO_DOL20,
+		LevelSetList::UP_TO_PHP_74,
+		// Add all predefined rules to migrate to up to php 71.
+		// Warning this break tab spacing of arrays on several lines
+		// LevelSetList::UP_TO_PHP_70,
+	]);
 	// Add predefined rules for a given version only
 	//$rectorConfig->import(SetList::PHP_70);
 	//$rectorConfig->import(SetList::PHP_71);
